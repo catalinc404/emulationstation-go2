@@ -28,9 +28,9 @@ constexpr char SCRAPER_RESOURCES_DIR[] = "scrapers";
 constexpr char DEVELOPERS_JSON_FILE[] = "gamesdb_developers.json";
 constexpr char PUBLISHERS_JSON_FILE[] = "gamesdb_publishers.json";
 constexpr char GENRES_JSON_FILE[] = "gamesdb_genres.json";
-constexpr char DEVELOPERS_ENDPOINT[] = "/Developers";
-constexpr char PUBLISHERS_ENDPOINT[] = "/Publishers";
-constexpr char GENRES_ENDPOINT[] = "/Genres";
+constexpr char DEVELOPERS_ENDPOINT[] = "/v1/Developers";
+constexpr char PUBLISHERS_ENDPOINT[] = "/v1/Publishers";
+constexpr char GENRES_ENDPOINT[] = "/v1/Genres";
 
 std::string genFilePath(const std::string& file_name)
 {

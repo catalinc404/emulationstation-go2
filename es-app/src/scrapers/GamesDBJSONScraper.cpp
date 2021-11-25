@@ -110,21 +110,19 @@ void thegamesdb_generate_json_scraper_requests(const ScraperSearchParams& params
 	if (!cleanName.empty() && cleanName.substr(0, 3) == "id:")
 	{
 		std::string gameID = cleanName.substr(3);
-		path += "/Games/ByGameID?" + apiKey +
-				"&fields=players,publishers,genres,overview,last_updated,rating,"
-				"platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&"
-				"include=boxart&id=" +
-				HttpReq::urlEncode(gameID);
+		path += "/v1/Games/ByGameID?" + apiKey +
+				"&fields=" + HttpReq::urlEncode("players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates")+
+				"&include=boxart"+
+				"&id=" + HttpReq::urlEncode(gameID);
 		usingGameID = true;
 	} else
 	{
 		if (cleanName.empty())
 			cleanName = params.game->getCleanName();
-		path += "/Games/ByGameName?" + apiKey +
-				"&fields=players,publishers,genres,overview,last_updated,rating,"
-				"platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates&"
-				"include=boxart&name=" +
-				HttpReq::urlEncode(cleanName);
+		path += "/v1/Games/ByGameName?" + apiKey +
+				"&fields=" + HttpReq::urlEncode("players,publishers,genres,overview,last_updated,rating,platform,coop,youtube,os,processor,ram,hdd,video,sound,alternates") +
+				"&include=boxart" +
+				"&name=" + HttpReq::urlEncode(cleanName);
 	}
 
 	if (usingGameID)
@@ -347,10 +345,14 @@ void TheGamesDBJSONRequest::process(const std::unique_ptr<HttpReq>& req, std::ve
 
 	if (doc.HasParseError())
 	{
+		LOG(LogError) << "URL: " << req->getUrl();
+		LOG(LogError) << "JSON: " << req->getContent().c_str();
 		std::string err =
 			std::string("TheGamesDBJSONRequest - Error parsing JSON. \n\t") + GetParseError_En(doc.GetParseError());
 		setError(err);
 		LOG(LogError) << err;
+
+
 		return;
 	}
 
