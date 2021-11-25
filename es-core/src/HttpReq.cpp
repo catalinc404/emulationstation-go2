@@ -38,7 +38,7 @@ bool HttpReq::isUrl(const std::string& str)
 }
 
 HttpReq::HttpReq(const std::string& url)
-	: mStatus(REQ_IN_PROGRESS), mHandle(NULL)
+	: mStatus(REQ_IN_PROGRESS), mHandle(NULL), m_url(url)
 {
 	mHandle = curl_easy_init();
 
@@ -196,6 +196,11 @@ size_t HttpReq::write_content(void* buff, size_t size, size_t nmemb, void* req_p
 	ss.write((char*)buff, size * nmemb);
 
 	return nmemb;
+}
+
+std::string HttpReq::getUrl() const
+{
+	return m_url;
 }
 
 //used as a curl callback

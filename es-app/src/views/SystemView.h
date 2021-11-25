@@ -4,6 +4,7 @@
 
 #include "components/IList.h"
 #include "components/TextComponent.h"
+#include "components/ComponentGrid.h"
 #include "resources/Font.h"
 #include "GuiComponent.h"
 #include <memory>
@@ -76,15 +77,22 @@ private:
 	void renderInfoBar(const Transform4x4f& trans);
 	void renderFade(const Transform4x4f& trans);
 
+	void deviceStatusUpdate(int deltaTime);
 
 	SystemViewCarousel mCarousel;
 	TextComponent mSystemInfo;
+	
+	TextComponent mDeviceInfo;
+	TextComponent mDeviceSoundInfo;
+	TextComponent mDeviceBatteryInfo;
+	uint32_t	  mSoundLevel;
+	uint32_t	  mBatteryLevel;		
 
 	// unit is list index
 	float mCamOffset;
 	float mExtrasCamOffset;
 	float mExtrasFadeOpacity;
-
+	
 	bool mViewNeedsReload;
 	bool mShowing;
 };

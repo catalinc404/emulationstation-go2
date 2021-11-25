@@ -3,10 +3,14 @@
 #define ES_CORE_LOG_H
 
 #include <sstream>
+#include <iostream>
 
-#define LOG(level) \
-if(level > Log::getReportingLevel()) ; \
-else Log().get(level)
+#define QUOTE(string) #string
+#define LOG(level) std::clog << '\n' << QUOTE(level) << ": "
+
+//#define LOG(level) \
+//if(level > Log::getReportingLevel()) ; \
+//else Log().get(level)
 
 enum LogLevel { LogError, LogWarning, LogInfo, LogDebug };
 

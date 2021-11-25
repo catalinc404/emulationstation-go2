@@ -104,9 +104,9 @@ namespace Renderer
 		windowWidth = go2_display_height_get(display);
 		windowHeight = go2_display_width_get(display);
 		screenWidth = windowWidth;
-		screenHeight = windowHeight - 16;
+		screenHeight = windowHeight;// - 16;
 		screenOffsetX = 0;
-		screenOffsetY = 0 + 16;
+		screenOffsetY = 0;// + 16;
 		screenRotate = 0;
 		
 		setupWindow();

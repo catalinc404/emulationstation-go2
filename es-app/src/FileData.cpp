@@ -290,7 +290,8 @@ void FileData::launchGame(Window* window)
 
 	Scripting::fireEvent("game-start", rom, basename);
 
-	LOG(LogInfo) << "	" << command;
+	LOG(LogInfo) << "	'" << command << "'";
+	LOG(LogInfo) << "";
 	int exitCode = runSystemCommand(command);
 
 	if(exitCode != 0)

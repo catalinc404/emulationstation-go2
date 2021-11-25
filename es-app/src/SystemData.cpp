@@ -341,7 +341,7 @@ std::string SystemData::getConfigPath(bool forWrite)
 	if(forWrite || Utils::FileSystem::exists(path))
 		return path;
 
-	return "/etc/emulationstation/es_systems.cfg";
+	return "es_systems.cfg";
 }
 
 bool SystemData::isVisible()

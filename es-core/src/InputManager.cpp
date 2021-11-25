@@ -573,14 +573,16 @@ std::string InputManager::getConfigPath()
 {
 	std::string path; // = Utils::FileSystem::getHomePath();
 	//path += "/.emulationstation/es_input.cfg";
-	path += "/etc/emulationstation/es_input.cfg";
+	//path += "/etc/emulationstation/es_input.cfg";
+	path = "es_input.cfg";
 	return path;
 }
 
 std::string InputManager::getTemporaryConfigPath()
 {
-	std::string path = Utils::FileSystem::getHomePath();
-	path += "/.emulationstation/es_temporaryinput.cfg";
+	//std::string path = Utils::FileSystem::getHomePath();
+	std::string path = "";
+	path += "es_temporaryinput.cfg";
 	return path;
 }
 

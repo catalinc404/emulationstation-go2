@@ -46,6 +46,8 @@ public:
 
 	std::string getContent() const; // mStatus must be REQ_SUCCESS
 
+	std::string getUrl() const;
+
 	static std::string urlEncode(const std::string &s);
 	static bool isUrl(const std::string& s);
 
@@ -67,6 +69,7 @@ private:
 
 	std::stringstream mContent;
 	std::string mErrorMsg;
+	std::string m_url;
 };
 
 #endif // ES_CORE_HTTP_REQ_H

@@ -9,13 +9,25 @@
 #include "SystemData.h"
 #include "Window.h"
 
+#include <iomanip>
+
+#include <go2/input.h>
+#include <go2/audio.h>
+
 // buffer values for scrolling velocity (left, stopped, right)
 const int logoBuffersLeft[] = { -5, -2, -1 };
 const int logoBuffersRight[] = { 1, 2, 5 };
 
+static go2_input_t* go_input = nullptr;
+
 SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(window, LIST_SCROLL_STYLE_SLOW, LIST_ALWAYS_LOOP),
 										 mViewNeedsReload(true),
-										 mSystemInfo(window, "SYSTEM INFO", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_CENTER)
+										 mSystemInfo(window, "SYSTEM INFO", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_CENTER),
+										 mDeviceInfo(window, "Odroid GO Super", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_CENTER),
+										 mDeviceSoundInfo(window, "Volume", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_LEFT),
+										 mDeviceBatteryInfo(window, "Battery", Font::get(FONT_SIZE_SMALL), 0x33333300, ALIGN_RIGHT),
+										 mSoundLevel(0),
+										 mBatteryLevel(0)
 {
 	mCamOffset = 0;
 	mExtrasCamOffset = 0;
@@ -23,6 +35,8 @@ SystemView::SystemView(Window* window) : IList<SystemViewData, SystemData*>(wind
 
 	setSize((float)Renderer::getScreenWidth(), (float)Renderer::getScreenHeight());
 	populate();
+
+	go_input = go2_input_create();
 }
 
 void SystemView::populate()
@@ -209,6 +223,7 @@ bool SystemView::input(InputConfig* config, Input input)
 void SystemView::update(int deltaTime)
 {
 	listUpdate(deltaTime);
+	deviceStatusUpdate(deltaTime);
 	GuiComponent::update(deltaTime);
 }
 
@@ -369,6 +384,11 @@ void SystemView::render(const Transform4x4f& parentTrans)
 	}
 
 	renderExtras(trans, minMax.second, INT16_MAX);
+
+	Renderer::setMatrix(trans);
+	mDeviceInfo.render(trans);
+	mDeviceSoundInfo.render(trans);
+	mDeviceBatteryInfo.render(trans);
 }
 
 std::vector<HelpPrompt> SystemView::getHelpPrompts()
@@ -623,6 +643,34 @@ void  SystemView::getDefaultElements(void)
 	mSystemInfo.setColor(0x000000FF);
 	mSystemInfo.setZIndex(50);
 	mSystemInfo.setDefaultZIndex(50);
+
+	// Device Info Bar
+	mDeviceInfo.setSize(mSize.x(), mSystemInfo.getFont()->getLetterHeight()*1.6f);
+	mDeviceInfo.setPosition(0, 0);
+	mDeviceInfo.setBackgroundColor(0xDDDDDDD8);
+	mDeviceInfo.setRenderBackground(true);
+	mDeviceInfo.setFont(Font::get((int)(0.035f * mSize.y()), Font::getDefaultPath()));
+	mDeviceInfo.setColor(0x000000FF);
+	mDeviceInfo.setZIndex(50);
+	mDeviceInfo.setDefaultZIndex(50);
+
+	// Device Sound Info
+	mDeviceSoundInfo.setSize(100, mSystemInfo.getFont()->getLetterHeight()*1.6f);
+	mDeviceSoundInfo.setPosition(3, 0);
+	mDeviceSoundInfo.setRenderBackground(false);
+	mDeviceSoundInfo.setFont(Font::get((int)(0.035f * mSize.y()), Font::getDefaultPath()));
+	mDeviceSoundInfo.setColor(0x000000FF);
+	mDeviceSoundInfo.setZIndex(50);
+	mDeviceSoundInfo.setDefaultZIndex(50);
+
+	// Device Sound Info
+	mDeviceBatteryInfo.setSize(100, mSystemInfo.getFont()->getLetterHeight()*1.6f);
+	mDeviceBatteryInfo.setPosition(mSize.x() - 100 - 3, 0);
+	mDeviceBatteryInfo.setRenderBackground(false);
+	mDeviceBatteryInfo.setFont(Font::get((int)(0.035f * mSize.y()), Font::getDefaultPath()));
+	mDeviceBatteryInfo.setColor(0x000000FF);
+	mDeviceBatteryInfo.setZIndex(50);
+	mDeviceBatteryInfo.setDefaultZIndex(50);
 }
 
 void SystemView::getCarouselFromTheme(const ThemeData::ThemeElement* elem)
@@ -688,4 +736,37 @@ void SystemView::onShow()
 void SystemView::onHide()
 {
 	mShowing = false;
+}
+
+void SystemView::deviceStatusUpdate(int deltaTime)
+{
+	uint32_t soundLevel = go2_audio_volume_get(NULL);
+	if(mSoundLevel != soundLevel)
+	{
+		mSoundLevel = soundLevel;
+
+		std::stringstream ss;
+		ss << "Volume:";
+		ss << std::setw(3) << mSoundLevel;
+		ss << '%';
+
+		mDeviceSoundInfo.setText(ss.str());
+	}
+	
+	
+	go2_battery_state_t batteryState;
+	go2_input_battery_read(go_input, &batteryState);
+
+	uint32_t batteryLevel = batteryState.level;
+	if(mBatteryLevel != batteryLevel)
+	{
+		mBatteryLevel = batteryLevel;
+
+		std::stringstream ss;
+		ss << "Battery:";
+		ss << std::setw(3) << mBatteryLevel;
+		ss << '%';
+
+		mDeviceBatteryInfo.setText(ss.str());
+	}
 }

@@ -1,9 +1,13 @@
 #!/bin/sh
 
 esdir="$(dirname $0)"
+
+echo "current dir: $esdir"
+cd $esdir
+
 while true; do
     rm -f /tmp/es-restart /tmp/es-sysrestart /tmp/es-shutdown
-    "$esdir/emulationstation" "$@"
+    ./emulationstation "$@"
     ret=$?
     [ -f /tmp/es-restart ] && continue
     if [ -f /tmp/es-sysrestart ]; then

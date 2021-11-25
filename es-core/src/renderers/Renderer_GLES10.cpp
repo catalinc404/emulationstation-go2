@@ -303,6 +303,7 @@ namespace Renderer
 			int w = go2_display_height_get(display);
 			int h = go2_display_width_get(display);
 
+			/*
 			{
 				// Battery level
 				const uint8_t* src = battery_image.pixel_data;
@@ -414,14 +415,17 @@ namespace Renderer
 					dst += dst_stride;
 				}
 			}
+			*/
 
 
 			go2_context_swap_buffers(context);
 			go2_surface_t* surface = go2_context_surface_lock(context);
 
+			/*
 			go2_surface_blit(titlebarSurface, 0, 0, w, 16,
 							 surface, 0, 0, w, 16,
 							 GO2_ROTATION_DEGREES_0);
+			*/
 
 			if (g_screenshot_requested)
 			{
